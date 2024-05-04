@@ -37,7 +37,7 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: conversejs.luigi311_${{ matrix.arch }}
+          name: meshtastic-web.luigi311_${{ matrix.arch }}
           path: build/*/app/*.click
           if-no-files-found: error
 
