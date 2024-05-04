@@ -1,0 +1,17 @@
+[package]
+name = "meshtastic-web"
+version = "1.0.0"
+authors = ["Luigi311 <ubport@luigi311.com>"]
+edition = "2021"
+build = "src/build.rs"
+
+[dependencies]
+qmetaobject = "0.2"
+gettext-rs = "0.7"
+cstr = "0.2"
+cpp = "0.5"
+actix-web = "4"
+actix-files = "0.6"
+
+[build-dependencies]
+cpp_build = "0.5"

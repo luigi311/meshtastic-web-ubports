@@ -1,0 +1,10 @@
+clickable_minimum_required: 7.11.0
+builder: rust
+kill: meshtastic-web
+install_root_data:
+- manifest.json
+- content-hub.json
+- meshtastic-web.apparmor
+- meshtastic-web.desktop
+- assets
+- www

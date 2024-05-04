@@ -1,0 +1,15 @@
+{
+    "name": "meshtastic-web.luigi311",
+    "description": "Web client of Meshtastic",
+    "architecture": "@CLICK_ARCH@",
+    "title": "Meshtastic Web",
+    "hooks": {
+        "meshtastic-web": {
+            "apparmor": "meshtastic-web.apparmor",
+            "desktop":  "meshtastic-web.desktop"
+        }
+    },
+    "version": "1.0.0",
+    "maintainer": "Luigi311 <ubport@luigi311.com>",
+    "framework" : "@CLICK_FRAMEWORK@"
+}

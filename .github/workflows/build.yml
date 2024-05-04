@@ -1,0 +1,75 @@
+name: Clickable Build
+
+on:
+  push:
+    paths-ignore:
+      - .gitignore
+      - "*.md"
+  pull_request:
+    paths-ignore:
+      - .gitignore
+      - "*.md"
+
+env:
+  VERSION: ubuntu-sdk-20.04
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [amd64, arm64, armhf]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      
+      - name: Install clickable
+        run: |
+          python3 -m pip install clickable-ut html2text
+      
+      - name: Build
+        run: |
+          CLICKABLE_FRAMEWORK=${VERSION} clickable build --arch ${{ matrix.arch }}
+      
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: conversejs.luigi311_${{ matrix.arch }}
+          path: build/*/app/*.click
+          if-no-files-found: error
+
+      - name: Grab changelog
+        if: startsWith(github.event.ref, 'refs/tags/v') && matrix.arch == 'amd64'
+        run: |
+          curl -s -L https://github.com/${GITHUB_REPOSITORY}/releases/tag/${GITHUB_REF/refs\/tags\//} > temp.html
+          sed -n '/data-test-selector="body-content"/,/<\/div>/p'  temp.html > changelog.html
+          html2text changelog.html > changelog.txt
+          sed -i "1s/^/${GITHUB_REF/refs\/tags\//}\n/" changelog.txt
+      
+      - name: Publish with changelog
+        if: startsWith(github.event.ref, 'refs/tags/v') && matrix.arch == 'amd64'
+        id: publish-wc
+        env:
+          APIKEY: ${{ secrets.APIKEY }}
+        continue-on-error: true
+        run: |
+          CLICKABLE_FRAMEWORK=${VERSION} clickable publish --apikey ${{ env.APIKEY }} --arch ${{ matrix.arch }} "$(<changelog.txt)"
+      
+      # publish without changelog for amd64 if publish-wc fails as a fallback
+      - name: Publish without changelog
+        if: startsWith(github.event.ref, 'refs/tags/v') && matrix.arch == 'amd64' && steps.publish-wc.outcome != 'success'
+        id: publish-without-changelog
+        env:
+          APIKEY: ${{ secrets.APIKEY }}
+        run: |
+          CLICKABLE_FRAMEWORK=${VERSION} clickable publish --apikey ${{ env.APIKEY }} --arch ${{ matrix.arch }}
+
+      - name: Publish without changelog
+        env:
+          APIKEY: ${{ secrets.APIKEY }}
+        if: startsWith(github.event.ref, 'refs/tags/v') && matrix.arch != 'amd64'
+        run: |
+          CLICKABLE_FRAMEWORK=${VERSION} clickable publish --apikey ${{ env.APIKEY }} --arch ${{ matrix.arch }}

@@ -1,0 +1,10 @@
+{
+    "policy_groups": [
+        "networking",
+        "content_exchange",
+        "audio",
+        "video",
+        "webview"
+    ],
+    "policy_version": 20.04
+}
