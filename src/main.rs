@@ -73,7 +73,9 @@ fn main() {
     }
 
     // Set enviorment variables for chromium
-    let chromium_flags = "--enable-gpu-compositing --enable-native-gpu-memory-buffers  --enable-zero-copy --enable-zero-copy-rasterization  \
+    // Enable web bluetooth required for meshtastic bluetooth devices
+    let chromium_flags = " --flag-switches-begin --enable-features=WebBluetooth --flag-switches-end \
+        --enable-gpu-compositing --enable-native-gpu-memory-buffers  --enable-zero-copy --enable-zero-copy-rasterization  \
         --enable-accelerated-video-decode --enable-accelerated-mjpeg-decode  \
         --enable-oop-rasterization --canvas-oop-rasterization \
         --turn-off-streaming-media-caching-on-battery --back-forward-cache --smooth-scrolling --enable-quic --enable-parallel-downloading";
