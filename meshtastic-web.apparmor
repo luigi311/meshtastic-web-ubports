@@ -1,6 +1,7 @@
 {
     "policy_groups": [
         "networking",
+        "bluetooth",
         "content_exchange",
         "audio",
         "video",
